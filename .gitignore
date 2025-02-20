@@ -1,0 +1,41 @@
+# Build Folders
+bin/
+obj/
+
+# User-specific files
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Log Files
+*.log
+
+# DotNet Core
+project.lock.json
+project.fragment.lock.json
+artifacts/
+
+# Publish Output
+publish/
+*.db
+*.db-journal
+appsettings.*.json
+
+# MacOS
+.DS_Store
+
+# Windows
+Thumbs.db
+
+# NuGet
+*.nupkg
+packages/
+.nuget/
+
+# User-specific Files
+*.rsuser
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
