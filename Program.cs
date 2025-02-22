@@ -1,8 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.CommandLine;
-using System.CommandLine.Invocation;
 using System.Diagnostics;
-using System.IO;
+using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
@@ -66,14 +66,37 @@ namespace ClipboardListener
         }
 
         /// <summary>
-        /// Escapes special characters for use in a batch file.
-        /// Currently, it doubles % characters so they pass literally.
+        /// Splits a command-line string into individual arguments.
+        /// This is a simple parser that handles quoted arguments.
         /// </summary>
-        private static string EscapeBatchParameter(string input)
+        private static IEnumerable<string> SplitArguments(string commandLine)
         {
-            if (string.IsNullOrEmpty(input)) return input;
-            // Escape % characters by replacing each % with %%
-            return input.Replace("%", "%%");
+            if (string.IsNullOrWhiteSpace(commandLine))
+                yield break;
+
+            bool inQuotes = false;
+            var arg = new StringBuilder();
+            foreach (char c in commandLine)
+            {
+                if (c == '\"')
+                {
+                    inQuotes = !inQuotes;
+                }
+                else if (!inQuotes && char.IsWhiteSpace(c))
+                {
+                    if (arg.Length > 0)
+                    {
+                        yield return arg.ToString();
+                        arg.Clear();
+                    }
+                }
+                else
+                {
+                    arg.Append(c);
+                }
+            }
+            if (arg.Length > 0)
+                yield return arg.ToString();
         }
 
         private static void RunClipboardListener(string pattern, string command, string parameter, bool pause)
@@ -100,42 +123,41 @@ namespace ClipboardListener
                             ? clipboardText
                             : parameter.Replace("{clipboard}", clipboardText);
 
-                        try
+                        // Run the command in a separate task to avoid blocking the clipboard listener.
+                        Task.Run(() =>
                         {
-                            if (pause)
+                            try
                             {
-                                // Use the helper function to escape any problematic characters.
-                                string safeParameter = EscapeBatchParameter(rawParameter);
-
-                                // Create a temporary batch file to run the command and pause afterwards.
-                                string tempBatchFile = Path.Combine(Path.GetTempPath(), $"ClipboardListener_{Guid.NewGuid()}.bat");
-                                // The batch file will execute the command with its parameters and then call pause.
-                                string batchContent = $"{command} {safeParameter}{Environment.NewLine}pause";
-                                File.WriteAllText(tempBatchFile, batchContent);
-
-                                var startInfo = new ProcessStartInfo
-                                {
-                                    FileName = "cmd.exe",
-                                    Arguments = $"/c \"{tempBatchFile}\"",
-                                    UseShellExecute = true
-                                };
-                                Process.Start(startInfo);
-                            }
-                            else
-                            {
+                                // Use ArgumentList to avoid any issues with escaping.
                                 var startInfo = new ProcessStartInfo
                                 {
                                     FileName = command,
-                                    Arguments = rawParameter,
-                                    UseShellExecute = true
+                                    UseShellExecute = false, // ArgumentList is only available when false.
+                                    CreateNoWindow = false
                                 };
-                                Process.Start(startInfo);
+
+                                // Split the rawParameter string into individual arguments.
+                                foreach (var arg in SplitArguments(rawParameter))
+                                {
+                                    startInfo.ArgumentList.Add(arg);
+                                }
+
+                                // Start the process.
+                                var process = Process.Start(startInfo);
+
+                                // If pause is requested, wait for the process to exit and then prompt.
+                                if (pause && process != null)
+                                {
+                                    process.WaitForExit();
+                                    Console.WriteLine("Press any key to continue...");
+                                    Console.ReadKey();
+                                }
                             }
-                        }
-                        catch (Exception ex)
-                        {
-                            Console.WriteLine($"Error executing command: {ex.Message}");
-                        }
+                            catch (Exception ex)
+                            {
+                                Console.WriteLine($"Error executing command: {ex.Message}");
+                            }
+                        });
                     }
                     else
                     {
