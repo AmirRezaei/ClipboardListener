@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.CommandLine;
 using System.Diagnostics;
@@ -13,6 +14,9 @@ namespace ClipboardListener
 {
     internal class Program
     {
+        // Thread-safe collection to track active downloads keyed by clipboard text (URL)
+        private static readonly ConcurrentDictionary<string, bool> ActiveDownloads = new ConcurrentDictionary<string, bool>();
+
         [STAThread]
         static async Task<int> Main(string[] args)
         {
@@ -116,6 +120,13 @@ namespace ClipboardListener
                     Console.WriteLine($"Clipboard updated: {clipboardText}");
                     if (regex.IsMatch(clipboardText))
                     {
+                        // Check if this URL is already being processed.
+                        if (!ActiveDownloads.TryAdd(clipboardText, true))
+                        {
+                            Console.WriteLine("This URL is already being processed. Skipping duplicate.");
+                            return;
+                        }
+
                         Console.WriteLine("Pattern matched. Executing command...");
 
                         // Substitute the {clipboard} token if present.
@@ -128,11 +139,10 @@ namespace ClipboardListener
                         {
                             try
                             {
-                                // Use ArgumentList to avoid any issues with escaping.
                                 var startInfo = new ProcessStartInfo
                                 {
                                     FileName = command,
-                                    UseShellExecute = false, // ArgumentList is only available when false.
+                                    UseShellExecute = false, // Required for ArgumentList.
                                     CreateNoWindow = false
                                 };
 
@@ -156,6 +166,11 @@ namespace ClipboardListener
                             catch (Exception ex)
                             {
                                 Console.WriteLine($"Error executing command: {ex.Message}");
+                            }
+                            finally
+                            {
+                                // Remove the URL from active downloads once processing is finished.
+                                ActiveDownloads.TryRemove(clipboardText, out _);
                             }
                         });
                     }

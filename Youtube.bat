@@ -1,0 +1,1 @@
+.\ClipboardListener.exe --pattern "^https://www\.youtube\.com/(watch\?v=|playlist\?list=)" --command "yt-dlp.exe" --parameter "-P R:\ --yes-playlist -f \"bestvideo[ext=webm]+bestaudio[ext=webm]/best[ext=webm]\" --no-part --no-continue -o \"%%(playlist_index)s-%%(title)s.%%(ext)s\" {clipboard}" --pause
