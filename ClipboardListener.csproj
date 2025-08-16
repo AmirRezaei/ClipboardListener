@@ -19,6 +19,9 @@
   <ItemGroup>
     <PackageReference Include="SharpClipboard" Version="3.5.2" />
     <PackageReference Include="System.CommandLine" Version="2.0.0-beta4.22272.1" />
+      <None Update="x.bat">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
       <None Update="Youtube.bat">
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </None>
