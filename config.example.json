@@ -80,7 +80,252 @@
         "-o",
         "twitter.size=orig",
         "-o",
-        "base-directory=i:\\0\\2x",
+        "base-directory=R:\\",
+        "{clipboard}"
+      ],
+      "pauseAfterRun": false,
+      "ignoreCase": true
+    },
+    {
+      "name": "Pinterest pin (image/video) via gallery-dl",
+      "enabled": true,
+      "pattern": "^https://(?:[a-z]+\\.)?pinterest\\.(?:com|[a-z]{2})/pin/\\d+(?:/|\\?.*)?$",
+      "command": "gallery-dl",
+      "args": [
+        "--cookies-from-browser",
+        "firefox",
+        "-o",
+        "base-directory=R:\\",
+        "{clipboard}"
+      ],
+      "pauseAfterRun": false,
+      "ignoreCase": true
+    },
+    {
+      "name": "Pinterest short link (pin.it) via gallery-dl",
+      "enabled": true,
+      "pattern": "^https://pin\\.it/[A-Za-z0-9_-]+(?:\\?.*)?$",
+      "command": "gallery-dl",
+      "args": [
+        "--cookies-from-browser",
+        "firefox",
+        "-o",
+        "base-directory=R:\\",
+        "{clipboard}"
+      ],
+      "pauseAfterRun": false,
+      "ignoreCase": true
+    },
+    {
+      "name": "TikTok video (user URL) via yt-dlp",
+      "enabled": true,
+      "pattern": "^https://(?:www\\.)?tiktok\\.com/@[^/]+/video/\\d+(?:\\?.*)?$",
+      "command": "yt-dlp.exe",
+      "args": [
+        "-P",
+        "R:\\",
+        "--cookies-from-browser",
+        "firefox",
+        "-f",
+        "bv*+ba/b",
+        "--merge-output-format",
+        "mp4",
+        "{clipboard}"
+      ],
+      "pauseAfterRun": false,
+      "ignoreCase": true
+    },
+    {
+      "name": "TikTok video (short link vm/vt) via yt-dlp",
+      "enabled": true,
+      "pattern": "^https://(?:vm|vt)\\.tiktok\\.com/[A-Za-z0-9]+(?:/|\\?.*)?$",
+      "command": "yt-dlp.exe",
+      "args": [
+        "-P",
+        "R:\\",
+        "--cookies-from-browser",
+        "firefox",
+        "-f",
+        "bv*+ba/b",
+        "--merge-output-format",
+        "mp4",
+        "{clipboard}"
+      ],
+      "pauseAfterRun": false,
+      "ignoreCase": true
+    },
+    
+    {
+      "name": "Instagram post/reel/tv via gallery-dl",
+      "enabled": true,
+      "pattern": "^https://(?:www\\.)?instagram\\.com/(?:p|reel|tv)/[A-Za-z0-9_-]+/?(?:\\?.*)?$",
+      "command": "gallery-dl",
+      "args": [
+        "--cookies-from-browser",
+        "firefox",
+        "-o",
+        "base-directory=R:\\",
+        "{clipboard}"
+      ],
+      "pauseAfterRun": false,
+      "ignoreCase": true
+    },
+    {
+      "name": "Reddit post (images/galleries) via gallery-dl",
+      "enabled": true,
+      "pattern": "^https://(?:www\\.)?reddit\\.com/r/[^/]+/comments/[A-Za-z0-9]+/[^/]+/?(?:\\?.*)?$",
+      "command": "gallery-dl",
+      "args": [
+        "-o",
+        "base-directory=R:\\",
+        "{clipboard}"
+      ],
+      "pauseAfterRun": false,
+      "ignoreCase": true
+    },
+    {
+      "name": "Reddit direct image (i.redd.it) via gallery-dl",
+      "enabled": true,
+      "pattern": "^https://i\\.redd\\.it/[^?\\s]+(?:\\?.*)?$",
+      "command": "gallery-dl",
+      "args": [
+        "-o",
+        "base-directory=R:\\",
+        "{clipboard}"
+      ],
+      "pauseAfterRun": false,
+      "ignoreCase": true
+    },
+    {
+      "name": "Reddit hosted video (v.redd.it) via yt-dlp",
+      "enabled": true,
+      "pattern": "^https://v\\.redd\\.it/[A-Za-z0-9]+(?:\\?.*)?$",
+      "command": "yt-dlp.exe",
+      "args": [
+        "-P",
+        "R:\\",
+        "-f",
+        "bv*+ba/b",
+        "--merge-output-format",
+        "mp4",
+        "{clipboard}"
+      ],
+      "pauseAfterRun": false,
+      "ignoreCase": true
+    },
+    {
+      "name": "Imgur album/gallery via gallery-dl",
+      "enabled": true,
+      "pattern": "^https://(?:www\\.)?imgur\\.com/(?:a|gallery)/[A-Za-z0-9]+(?:/|\\?.*)?$",
+      "command": "gallery-dl",
+      "args": [
+        "-o",
+        "base-directory=R:\\",
+        "{clipboard}"
+      ],
+      "pauseAfterRun": false,
+      "ignoreCase": true
+    },
+    {
+      "name": "Imgur single image/page via gallery-dl",
+      "enabled": true,
+      "pattern": "^https://(?:i\\.)?imgur\\.com/[A-Za-z0-9]+(?:\\.[A-Za-z0-9]+)?(?:/|\\?.*)?$",
+      "command": "gallery-dl",
+      "args": [
+        "-o",
+        "base-directory=R:\\",
+        "{clipboard}"
+      ],
+      "pauseAfterRun": false,
+      "ignoreCase": true
+    },
+    {
+      "name": "Vimeo video via yt-dlp",
+      "enabled": true,
+      "pattern": "^https://(?:www\\.)?vimeo\\.com/\\d+(?:\\?.*)?$",
+      "command": "yt-dlp.exe",
+      "args": [
+        "-P",
+        "R:\\",
+        "-f",
+        "bv*+ba/b",
+        "--merge-output-format",
+        "mp4",
+        "{clipboard}"
+      ],
+      "pauseAfterRun": false,
+      "ignoreCase": true
+    },
+    {
+      "name": "Twitch VOD via yt-dlp",
+      "enabled": true,
+      "pattern": "^https://(?:www\\.)?twitch\\.tv/videos/\\d+(?:\\?.*)?$",
+      "command": "yt-dlp.exe",
+      "args": [
+        "-P",
+        "R:\\",
+        "-f",
+        "bv*+ba/b",
+        "--merge-output-format",
+        "mp4",
+        "{clipboard}"
+      ],
+      "pauseAfterRun": false,
+      "ignoreCase": true
+    },
+    {
+      "name": "Twitch Clip via yt-dlp",
+      "enabled": true,
+      "pattern": "^https://clips\\.twitch\\.tv/[A-Za-z0-9-]+(?:\\?.*)?$",
+      "command": "yt-dlp.exe",
+      "args": [
+        "-P",
+        "R:\\",
+        "-f",
+        "bv*+ba/b",
+        "--merge-output-format",
+        "mp4",
+        "{clipboard}"
+      ],
+      "pauseAfterRun": false,
+      "ignoreCase": true
+    },
+    {
+      "name": "Flickr photo via gallery-dl",
+      "enabled": true,
+      "pattern": "^https://(?:www\\.)?flickr\\.com/photos/[^/]+/\\d+/?(?:\\?.*)?$",
+      "command": "gallery-dl",
+      "args": [
+        "-o",
+        "base-directory=R:\\",
+        "{clipboard}"
+      ],
+      "pauseAfterRun": false,
+      "ignoreCase": true
+    },
+    {
+      "name": "DeviantArt deviation via gallery-dl",
+      "enabled": true,
+      "pattern": "^https://(?:www\\.)?deviantart\\.com/[^/]+/art/[^/?#]+(?:\\?.*)?$",
+      "command": "gallery-dl",
+      "args": [
+        "-o",
+        "base-directory=R:\\",
+        "{clipboard}"
+      ],
+      "pauseAfterRun": false,
+      "ignoreCase": true
+    },
+    {
+      "name": "Pixiv artwork via gallery-dl (requires login)",
+      "enabled": false,
+      "pattern": "^https://(?:www\\.)?pixiv\\.net/artworks/\\d+(?:\\?.*)?$",
+      "command": "gallery-dl",
+      "args": [
+        "--cookies-from-browser",
+        "firefox",
+        "-o",
+        "base-directory=R:\\",
         "{clipboard}"
       ],
       "pauseAfterRun": false,
