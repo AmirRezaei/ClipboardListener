@@ -1,196 +1,108 @@
-﻿using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.CommandLine;
-using System.Diagnostics;
-using System.Text;
+﻿// file: Program.cs
 using System.Text.RegularExpressions;
-using System.Threading;
-using System.Threading.Tasks;
-using WK.Libraries.SharpClipboardNS;
-using System.Windows.Forms;
 
-namespace ClipboardListener
+namespace ClipboardListener;
+
+internal static class Program
 {
-    internal class Program
+    private static CancellationTokenSource? _cts;
+
+    [STAThread]
+    private static void Main(string[] args)
     {
-        // Thread-safe collection to track active downloads keyed by clipboard text (URL)
-        private static readonly ConcurrentDictionary<string, bool> ActiveDownloads = new ConcurrentDictionary<string, bool>();
-
-        [STAThread]
-        static async Task<int> Main(string[] args)
+        try
         {
-            // Define the command-line options.
-            var patternOption = new Option<string>(
-                "--pattern",
-                description: "The regex pattern to detect in the clipboard text")
+            var configPath = GetConfigPath(args);
+            var config = ConfigLoader.Load(configPath);
+
+            Console.WriteLine($"[ClipboardListener] Loaded config: {Path.GetFullPath(configPath)}");
+            Console.WriteLine($"[ClipboardListener] PollIntervalMs={config.PollIntervalMs}, Rules={config.Rules.Count}");
+
+            _cts = new CancellationTokenSource();
+
+            Console.CancelKeyPress += (_, e) =>
             {
-                IsRequired = true
+                e.Cancel = true;
+                _cts!.Cancel();
             };
 
-            var commandOption = new Option<string>(
-                "--command",
-                description: "The CLI command to execute when the pattern is detected")
+            using var watcher = new ClipboardWatcher(config.PollIntervalMs);
+            watcher.TextCopied += (_, text) =>
             {
-                IsRequired = true
+                HandleClipboardText(text, config);
             };
 
-            var parameterOption = new Option<string>(
-                "--parameter",
-                description: "An arbitrary parameter to pass to the CLI command. Use the token {clipboard} to insert the clipboard text. If omitted, the clipboard text is used.",
-                getDefaultValue: () => string.Empty);
+            Console.WriteLine("[ClipboardListener] Monitoring clipboard. Press Ctrl+C to exit.");
+            watcher.Start(_cts.Token);
 
-            var pauseOption = new Option<bool>(
-                "--pause",
-                description: "If specified, the command execution will pause after completion so that the terminal remains open.");
-
-            // Create the root command with the defined options.
-            var rootCommand = new RootCommand("Clipboard Listener CLI")
-            {
-                patternOption,
-                commandOption,
-                parameterOption,
-                pauseOption
-            };
-
-            // Set the handler for the root command.
-            rootCommand.SetHandler((string pattern, string command, string parameter, bool pause) =>
-            {
-                // Create a new thread and ensure it is STA.
-                Thread staThread = new Thread(() =>
-                {
-                    RunClipboardListener(pattern, command, parameter, pause);
-                });
-                staThread.SetApartmentState(ApartmentState.STA);
-                staThread.Start();
-                staThread.Join();
-            }, patternOption, commandOption, parameterOption, pauseOption);
-
-            return await rootCommand.InvokeAsync(args);
+            // Wait until cancelled
+            _cts.Token.WaitHandle.WaitOne();
         }
-
-        /// <summary>
-        /// Splits a command-line string into individual arguments.
-        /// This is a simple parser that handles quoted arguments.
-        /// </summary>
-        private static IEnumerable<string> SplitArguments(string commandLine)
+        catch (OperationCanceledException)
         {
-            if (string.IsNullOrWhiteSpace(commandLine))
-                yield break;
+            // graceful exit
+        }
+        catch (Exception ex)
+        {
+            Console.Error.WriteLine("[ClipboardListener] Fatal error:");
+            Console.Error.WriteLine(ex);
+        }
+    }
 
-            bool inQuotes = false;
-            var arg = new StringBuilder();
-            foreach (char c in commandLine)
+    private static string GetConfigPath(string[] args)
+    {
+        // Usage:
+        //   ClipboardListener.exe [path-to-config.json]
+        // Defaults to "config.json" next to the executable.
+        if (args.Length >= 1 && !string.IsNullOrWhiteSpace(args[0]))
+            return args[0];
+
+        var exeDir = AppContext.BaseDirectory;
+        var defaultPath = Path.Combine(exeDir, "config.json");
+        return defaultPath;
+    }
+
+    private static void HandleClipboardText(string text, AppConfig config)
+    {
+        foreach (var rule in config.Rules)
+        {
+            if (rule.Enabled is false) continue;
+            if (!rule.CompiledRegex.IsMatch(text)) continue;
+
+            var args = rule.Args?.ToList() ?? new List<string>();
+            if (args.Count == 0 && !string.IsNullOrWhiteSpace(rule.Parameter))
             {
-                if (c == '\"')
-                {
-                    inQuotes = !inQuotes;
-                }
-                else if (!inQuotes && char.IsWhiteSpace(c))
-                {
-                    if (arg.Length > 0)
-                    {
-                        yield return arg.ToString();
-                        arg.Clear();
-                    }
-                }
-                else
-                {
-                    arg.Append(c);
-                }
+                // Fallback: pass raw string as a single argument set (kept for compatibility).
+                // Prefer "args": [] in JSON to avoid quoting issues.
+                args = new List<string> { rule.Parameter! };
             }
-            if (arg.Length > 0)
-                yield return arg.ToString();
-        }
 
-        private static void RunClipboardListener(string pattern, string command, string parameter, bool pause)
-        {
-            Regex regex = new Regex(pattern);
-            Console.WriteLine("Listening for clipboard changes...");
-
-            // Create a SharpClipboard instance.
-            var clipboard = new SharpClipboard();
-
-            // Subscribe to the ClipboardChanged event.
-            clipboard.ClipboardChanged += (sender, args) =>
+            // Replace placeholders
+            for (int i = 0; i < args.Count; i++)
             {
-                string clipboardText = clipboard.ClipboardText;
-                if (!string.IsNullOrEmpty(clipboardText))
+                args[i] = args[i].Replace("{clipboard}", text, StringComparison.Ordinal);
+            }
+
+            var displayName = string.IsNullOrWhiteSpace(rule.Name) ? rule.Pattern : rule.Name!;
+            Console.WriteLine($"[ClipboardListener] Match: {displayName}");
+            Console.WriteLine($"[ClipboardListener] -> {rule.Command} {string.Join(' ', args.Select(QuoteIfNeeded))}");
+
+            _ = Task.Run(async () =>
+            {
+                var (code, _) = await ProcessRunner.RunAsync(rule.Command, args, rule.WorkingDirectory, CancellationToken.None);
+                Console.WriteLine($"[ClipboardListener] Exit code: {code}");
+
+                if (rule.PauseAfterRun ?? config.PauseAfterRun)
                 {
-                    Console.WriteLine($"Clipboard updated: {clipboardText}");
-                    if (regex.IsMatch(clipboardText))
-                    {
-                        // Check if this URL is already being processed.
-                        if (!ActiveDownloads.TryAdd(clipboardText, true))
-                        {
-                            Console.WriteLine("This URL is already being processed. Skipping duplicate.");
-                            return;
-                        }
-
-                        Console.WriteLine("Pattern matched. Executing command...");
-
-                        // Substitute the {clipboard} token if present.
-                        string rawParameter = string.IsNullOrEmpty(parameter)
-                            ? clipboardText
-                            : parameter.Replace("{clipboard}", clipboardText);
-
-                        // Run the command in a separate task to avoid blocking the clipboard listener.
-                        Task.Run(() =>
-                        {
-                            try
-                            {
-                                var startInfo = new ProcessStartInfo
-                                {
-                                    FileName = command,
-                                    UseShellExecute = false, // Required for ArgumentList.
-                                    CreateNoWindow = false
-                                };
-
-                                // Split the rawParameter string into individual arguments.
-                                foreach (var arg in SplitArguments(rawParameter))
-                                {
-                                    startInfo.ArgumentList.Add(arg);
-                                }
-
-                                // Start the process.
-                                var process = Process.Start(startInfo);
-
-                                // If pause is requested, wait for the process to exit and then prompt.
-                                if (pause && process != null)
-                                {
-                                    process.WaitForExit();
-                                    Console.WriteLine("Press any key to continue...");
-                                    Console.ReadKey();
-                                }
-                            }
-                            catch (Exception ex)
-                            {
-                                Console.WriteLine($"Error executing command: {ex.Message}");
-                            }
-                            finally
-                            {
-                                // Remove the URL from active downloads once processing is finished.
-                                ActiveDownloads.TryRemove(clipboardText, out _);
-                            }
-                        });
-                    }
-                    else
-                    {
-                        Console.WriteLine("Pattern not matched.");
-                    }
+                    Console.WriteLine("Press any key to continue...");
+                    Console.ReadKey(true);
                 }
-            };
-
-            // Start a task to allow exiting the application.
-            Task.Run(() =>
-            {
-                Console.WriteLine("Press [Enter] to exit.");
-                Console.ReadLine();
-                Application.ExitThread();
             });
-
-            // Run the Windows Forms message loop.
-            Application.Run();
         }
+    }
+
+    private static string QuoteIfNeeded(string s)
+    {
+        return s.Any(char.IsWhiteSpace) ? $"\"{s}\"" : s;
     }
 }

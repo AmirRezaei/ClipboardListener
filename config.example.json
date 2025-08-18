@@ -1,0 +1,90 @@
+{
+  "pollIntervalMs": 400,
+  "pauseAfterRun": false,
+  "rules": [
+    {
+      "name": "X video via yt-dlp (i/status)",
+      "enabled": true,
+      "pattern": "^https://x\\.com/i/status/",
+      "command": "yt-dlp.exe",
+      "args": [
+        "-P",
+        "i:\\0\\2x",
+        "--cookies-from-browser",
+        "firefox",
+        "--S",
+        "codec:avc,res,br",
+        "-f",
+        "bv*+ba/b",
+        "--merge-output-format",
+        "mp4",
+        "{clipboard}"
+      ],
+      "pauseAfterRun": false,
+      "ignoreCase": true
+    },
+    {
+      "name": "YouTube video/playlist (best webm)",
+      "enabled": true,
+      "pattern": "^https://www\\.youtube\\.com/(watch\\?v=|playlist\\?list=)",
+      "command": "yt-dlp.exe",
+      "args": [
+        "-P",
+        "i:\\0\\2x",
+        "--yes-playlist",
+        "-f",
+        "bestvideo[ext=webm]+bestaudio[ext=webm]/best[ext=webm]",
+        "--no-part",
+        "--no-continue",
+        "-o",
+        "%(playlist_index)s-%(title)s.%(ext)s",
+        "{clipboard}"
+      ],
+      "pauseAfterRun": false,
+      "ignoreCase": true
+    },
+    {
+      "name": "YouTube audio-only (best)",
+      "enabled": false,
+      "pattern": "^https://www\\.youtube\\.com/(watch\\?v=|playlist\\?list=)",
+      "command": "yt-dlp.exe",
+      "args": [
+        "-P",
+        "i:\\0\\2x",
+        "--yes-playlist",
+        "--extract-audio",
+        "--audio-format",
+        "best",
+        "--audio-quality",
+        "0",
+        "-f",
+        "bestaudio",
+        "--no-part",
+        "--no-continue",
+        "--keep-video",
+        "-o",
+        "%(playlist_index)s-%(title)s.%(ext)s",
+        "{clipboard}"
+      ],
+      "pauseAfterRun": false,
+      "ignoreCase": true
+    },
+    {
+      "name": "X image (original size via gallery-dl)",
+      "enabled": true,
+      "pattern": "^https://x\\.com/(?:[^/]+/status|i/(?:web/)?status)/\\d+/photo/\\d+(?:\\?.*)?$",
+      "command": "gallery-dl",
+      "args": [
+        "--cookies-from-browser",
+        "firefox",
+        "-o",
+        "twitter.size=orig",
+        "-o",
+        "base-directory=i:\\0\\2x",
+        "{clipboard}"
+      ],
+      "pauseAfterRun": false,
+      "ignoreCase": true
+    }
+  ]
+}
