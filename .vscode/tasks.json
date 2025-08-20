@@ -32,7 +32,7 @@
             "args": [
                 "watch",
                 "run",
-                "--project",
+                // The "--project" switch has been removed from here
                 "${workspaceFolder}/ClipboardListener.csproj"
             ],
             "problemMatcher": "$msCompile"
@@ -56,6 +56,21 @@
             },
             "problemMatcher": "$msCompile",
             "detail": "Builds and publishes a single executable"
+        },
+        {
+            // This is the fully automatic task, now corrected
+            "label": "watch-build",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "watch",
+                "build",
+                 // The "--project" switch has been removed from here too
+                "${workspaceFolder}/ClipboardListener.csproj"
+            ],
+            "problemMatcher": "$msCompile",
+            "isBackground": true,
+            "runOptions": { "runOn": "folderOpen" }
         }
     ]
 }

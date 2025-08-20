@@ -1,1 +1,0 @@
-.\ClipboardListener.exe --pattern "^https://www\.youtube\.com/(watch\?v=|playlist\?list=)" --command "yt-dlp.exe" --parameter "-P R:\ --yes-playlist --extract-audio --audio-format best --audio-quality 0 -f bestaudio --no-part --no-continue --keep-video -o \"%%(playlist_index)s-%%(title)s.%%(ext)s\" {clipboard}" --pause

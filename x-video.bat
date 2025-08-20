@@ -1,1 +1,0 @@
-.\ClipboardListener.exe --pattern "^https://x\.com/i/status/" --command "yt-dlp.exe" --parameter "-P R:\ --cookies-from-browser firefox --S \"codec:avc,res,br\" -f \"bv*+ba/b\" --merge-output-format mp4 {clipboard}" --pause

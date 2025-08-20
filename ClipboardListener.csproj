@@ -16,10 +16,13 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <!-- Ship example config alongside the exe -->
-    <None Update="config.example.json">
+    <None Update="config.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Spectre.Console" Version="0.50.0" />
   </ItemGroup>
 
 </Project>

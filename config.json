@@ -1,3 +1,4 @@
+// file: config.json
 {
   "pollIntervalMs": 400,
   "pauseAfterRun": false,
@@ -9,10 +10,10 @@
       "command": "yt-dlp.exe",
       "args": [
         "-P",
-        "i:\\0\\2x",
+        "i:\\\\0\\\\2x",
         "--cookies-from-browser",
         "firefox",
-        "--S",
+        "-S",
         "codec:avc,res,br",
         "-f",
         "bv*+ba/b",
@@ -30,7 +31,7 @@
       "command": "yt-dlp.exe",
       "args": [
         "-P",
-        "i:\\0\\2x",
+        "i:\\\\0\\\\2x",
         "--yes-playlist",
         "-f",
         "bestvideo[ext=webm]+bestaudio[ext=webm]/best[ext=webm]",
@@ -50,7 +51,7 @@
       "command": "yt-dlp.exe",
       "args": [
         "-P",
-        "i:\\0\\2x",
+        "i:\\\\0\\\\2x",
         "--yes-playlist",
         "--extract-audio",
         "--audio-format",
@@ -69,6 +70,7 @@
       "pauseAfterRun": false,
       "ignoreCase": true
     },
+
     {
       "name": "X image (original size via gallery-dl)",
       "enabled": true,
@@ -80,7 +82,7 @@
         "-o",
         "twitter.size=orig",
         "-o",
-        "base-directory=R:\\",
+        "base-directory=R:\\\\",
         "{clipboard}"
       ],
       "pauseAfterRun": false,
@@ -95,7 +97,7 @@
         "--cookies-from-browser",
         "firefox",
         "-o",
-        "base-directory=R:\\",
+        "base-directory=R:\\\\",
         "{clipboard}"
       ],
       "pauseAfterRun": false,
@@ -110,12 +112,13 @@
         "--cookies-from-browser",
         "firefox",
         "-o",
-        "base-directory=R:\\",
+        "base-directory=R:\\\\",
         "{clipboard}"
       ],
       "pauseAfterRun": false,
       "ignoreCase": true
     },
+
     {
       "name": "TikTok video (user URL) via yt-dlp",
       "enabled": true,
@@ -123,7 +126,7 @@
       "command": "yt-dlp.exe",
       "args": [
         "-P",
-        "R:\\",
+        "R:\\\\",
         "--cookies-from-browser",
         "firefox",
         "-f",
@@ -142,7 +145,7 @@
       "command": "yt-dlp.exe",
       "args": [
         "-P",
-        "R:\\",
+        "R:\\\\",
         "--cookies-from-browser",
         "firefox",
         "-f",
@@ -154,7 +157,7 @@
       "pauseAfterRun": false,
       "ignoreCase": true
     },
-    
+
     {
       "name": "Instagram post/reel/tv via gallery-dl",
       "enabled": true,
@@ -164,12 +167,48 @@
         "--cookies-from-browser",
         "firefox",
         "-o",
-        "base-directory=R:\\",
+        "base-directory=R:\\\\",
         "{clipboard}"
       ],
       "pauseAfterRun": false,
       "ignoreCase": true
     },
+
+    {
+      "name": "Instagram user media (profile) via gallery-dl",
+      "enabled": true,
+      "pattern": "^https://(?:www\\.)?instagram\\.com/(?!p/|reel/|tv/|stories/)[A-Za-z0-9._]+/?(?:\\?.*)?$",
+      "command": "gallery-dl",
+      "args": [
+        "--cookies-from-browser",
+        "firefox",
+        "-o",
+        "base-directory=R:\\\\Instagram",
+        "--download-archive",
+        "R:\\\\_archives\\\\instagram-users.txt",
+        "{clipboard}"
+      ],
+      "pauseAfterRun": false,
+      "ignoreCase": true
+    },
+    {
+      "name": "Instagram user stories via gallery-dl",
+      "enabled": true,
+      "pattern": "^https://(?:www\\.)?instagram\\.com/stories/[A-Za-z0-9._]+/?(?:\\?.*)?$",
+      "command": "gallery-dl",
+      "args": [
+        "--cookies-from-browser",
+        "firefox",
+        "-o",
+        "base-directory=R:\\\\Instagram\\\\Stories",
+        "--download-archive",
+        "R:\\\\_archives\\\\instagram-stories.txt",
+        "{clipboard}"
+      ],
+      "pauseAfterRun": false,
+      "ignoreCase": true
+    },
+
     {
       "name": "Reddit post (images/galleries) via gallery-dl",
       "enabled": true,
@@ -177,7 +216,7 @@
       "command": "gallery-dl",
       "args": [
         "-o",
-        "base-directory=R:\\",
+        "base-directory=R:\\\\",
         "{clipboard}"
       ],
       "pauseAfterRun": false,
@@ -190,7 +229,7 @@
       "command": "gallery-dl",
       "args": [
         "-o",
-        "base-directory=R:\\",
+        "base-directory=R:\\\\",
         "{clipboard}"
       ],
       "pauseAfterRun": false,
@@ -203,7 +242,7 @@
       "command": "yt-dlp.exe",
       "args": [
         "-P",
-        "R:\\",
+        "R:\\\\",
         "-f",
         "bv*+ba/b",
         "--merge-output-format",
@@ -213,6 +252,7 @@
       "pauseAfterRun": false,
       "ignoreCase": true
     },
+
     {
       "name": "Imgur album/gallery via gallery-dl",
       "enabled": true,
@@ -220,7 +260,7 @@
       "command": "gallery-dl",
       "args": [
         "-o",
-        "base-directory=R:\\",
+        "base-directory=R:\\\\",
         "{clipboard}"
       ],
       "pauseAfterRun": false,
@@ -233,12 +273,13 @@
       "command": "gallery-dl",
       "args": [
         "-o",
-        "base-directory=R:\\",
+        "base-directory=R:\\\\",
         "{clipboard}"
       ],
       "pauseAfterRun": false,
       "ignoreCase": true
     },
+
     {
       "name": "Vimeo video via yt-dlp",
       "enabled": true,
@@ -246,7 +287,7 @@
       "command": "yt-dlp.exe",
       "args": [
         "-P",
-        "R:\\",
+        "R:\\\\",
         "-f",
         "bv*+ba/b",
         "--merge-output-format",
@@ -263,7 +304,7 @@
       "command": "yt-dlp.exe",
       "args": [
         "-P",
-        "R:\\",
+        "R:\\\\",
         "-f",
         "bv*+ba/b",
         "--merge-output-format",
@@ -280,7 +321,7 @@
       "command": "yt-dlp.exe",
       "args": [
         "-P",
-        "R:\\",
+        "R:\\\\",
         "-f",
         "bv*+ba/b",
         "--merge-output-format",
@@ -290,6 +331,7 @@
       "pauseAfterRun": false,
       "ignoreCase": true
     },
+
     {
       "name": "Flickr photo via gallery-dl",
       "enabled": true,
@@ -297,7 +339,7 @@
       "command": "gallery-dl",
       "args": [
         "-o",
-        "base-directory=R:\\",
+        "base-directory=R:\\\\",
         "{clipboard}"
       ],
       "pauseAfterRun": false,
@@ -310,12 +352,13 @@
       "command": "gallery-dl",
       "args": [
         "-o",
-        "base-directory=R:\\",
+        "base-directory=R:\\\\",
         "{clipboard}"
       ],
       "pauseAfterRun": false,
       "ignoreCase": true
     },
+
     {
       "name": "Pixiv artwork via gallery-dl (requires login)",
       "enabled": false,
@@ -325,7 +368,7 @@
         "--cookies-from-browser",
         "firefox",
         "-o",
-        "base-directory=R:\\",
+        "base-directory=R:\\\\",
         "{clipboard}"
       ],
       "pauseAfterRun": false,
