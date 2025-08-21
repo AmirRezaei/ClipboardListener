@@ -1,4 +1,3 @@
-// file: config.json
 {
   "pollIntervalMs": 400,
   "pauseAfterRun": false,
@@ -24,6 +23,35 @@
       "pauseAfterRun": false,
       "ignoreCase": true
     },
+    {
+          "name": "X user media tab via gallery-dl",
+          "enabled": true,
+          "pattern": "^https://(?:x\\.com|twitter\\.com)/(?!i/)[A-Za-z0-9_]{1,15}/media/?(?:\\?.*)?$",
+          "command": "gallery-dl",
+          "args": [
+            "--cookies-from-browser",
+            "firefox",
+            "-o",
+            "base-directory=i:\\\\0\\\\2x",
+            "-o",
+            "twitter.include=media",
+            "-o",
+            "twitter.timeline.strategy=media",
+            "-o",
+            "twitter.retweets=false",
+            "-o",
+            "twitter.replies=true",
+            "-o",
+            "twitter.quoted=false",
+            "-o",
+            "twitter.size=orig",
+            "--download-archive",
+            "i:\\\\0\\\\2x\\\\x-users-media.txt",
+            "{clipboard}"
+          ],
+          "pauseAfterRun": false,
+          "ignoreCase": true
+        },
     {
       "name": "YouTube video/playlist (best webm)",
       "enabled": true,
@@ -82,7 +110,7 @@
         "-o",
         "twitter.size=orig",
         "-o",
-        "base-directory=R:\\\\",
+        "base-directory=i:\\\\0\\\\2x",
         "{clipboard}"
       ],
       "pauseAfterRun": false,
@@ -97,7 +125,7 @@
         "--cookies-from-browser",
         "firefox",
         "-o",
-        "base-directory=R:\\\\",
+        "base-directory=i:\\\\0\\\\2x",
         "{clipboard}"
       ],
       "pauseAfterRun": false,
@@ -112,7 +140,7 @@
         "--cookies-from-browser",
         "firefox",
         "-o",
-        "base-directory=R:\\\\",
+        "base-directory=i:\\\\0\\\\2x",
         "{clipboard}"
       ],
       "pauseAfterRun": false,
@@ -126,7 +154,7 @@
       "command": "yt-dlp.exe",
       "args": [
         "-P",
-        "R:\\\\",
+        "i:\\\\0\\\\2x",
         "--cookies-from-browser",
         "firefox",
         "-f",
@@ -145,7 +173,7 @@
       "command": "yt-dlp.exe",
       "args": [
         "-P",
-        "R:\\\\",
+        "i:\\\\0\\\\2x",
         "--cookies-from-browser",
         "firefox",
         "-f",
@@ -167,7 +195,7 @@
         "--cookies-from-browser",
         "firefox",
         "-o",
-        "base-directory=R:\\\\",
+        "base-directory=i:\\\\0\\\\2x",
         "{clipboard}"
       ],
       "pauseAfterRun": false,
@@ -183,9 +211,9 @@
         "--cookies-from-browser",
         "firefox",
         "-o",
-        "base-directory=R:\\\\Instagram",
+        "base-directory=i:\\\\0\\\\2xInstagram",
         "--download-archive",
-        "R:\\\\_archives\\\\instagram-users.txt",
+        "i:\\\\0\\\\2x_archives\\\\instagram-users.txt",
         "{clipboard}"
       ],
       "pauseAfterRun": false,
@@ -200,9 +228,9 @@
         "--cookies-from-browser",
         "firefox",
         "-o",
-        "base-directory=R:\\\\Instagram\\\\Stories",
+        "base-directory=i:\\\\0\\\\2xInstagram\\\\Stories",
         "--download-archive",
-        "R:\\\\_archives\\\\instagram-stories.txt",
+        "i:\\\\0\\\\2x_archives\\\\instagram-stories.txt",
         "{clipboard}"
       ],
       "pauseAfterRun": false,
@@ -216,7 +244,7 @@
       "command": "gallery-dl",
       "args": [
         "-o",
-        "base-directory=R:\\\\",
+        "base-directory=i:\\\\0\\\\2x",
         "{clipboard}"
       ],
       "pauseAfterRun": false,
@@ -229,7 +257,7 @@
       "command": "gallery-dl",
       "args": [
         "-o",
-        "base-directory=R:\\\\",
+        "base-directory=i:\\\\0\\\\2x",
         "{clipboard}"
       ],
       "pauseAfterRun": false,
@@ -242,7 +270,7 @@
       "command": "yt-dlp.exe",
       "args": [
         "-P",
-        "R:\\\\",
+        "i:\\\\0\\\\2x",
         "-f",
         "bv*+ba/b",
         "--merge-output-format",
@@ -260,7 +288,7 @@
       "command": "gallery-dl",
       "args": [
         "-o",
-        "base-directory=R:\\\\",
+        "base-directory=i:\\\\0\\\\2x",
         "{clipboard}"
       ],
       "pauseAfterRun": false,
@@ -273,7 +301,7 @@
       "command": "gallery-dl",
       "args": [
         "-o",
-        "base-directory=R:\\\\",
+        "base-directory=i:\\\\0\\\\2x",
         "{clipboard}"
       ],
       "pauseAfterRun": false,
@@ -287,7 +315,7 @@
       "command": "yt-dlp.exe",
       "args": [
         "-P",
-        "R:\\\\",
+        "i:\\\\0\\\\2x",
         "-f",
         "bv*+ba/b",
         "--merge-output-format",
@@ -304,7 +332,7 @@
       "command": "yt-dlp.exe",
       "args": [
         "-P",
-        "R:\\\\",
+        "i:\\\\0\\\\2x",
         "-f",
         "bv*+ba/b",
         "--merge-output-format",
@@ -321,7 +349,7 @@
       "command": "yt-dlp.exe",
       "args": [
         "-P",
-        "R:\\\\",
+        "i:\\\\0\\\\2x",
         "-f",
         "bv*+ba/b",
         "--merge-output-format",
@@ -339,7 +367,7 @@
       "command": "gallery-dl",
       "args": [
         "-o",
-        "base-directory=R:\\\\",
+        "base-directory=i:\\\\0\\\\2x",
         "{clipboard}"
       ],
       "pauseAfterRun": false,
@@ -352,7 +380,7 @@
       "command": "gallery-dl",
       "args": [
         "-o",
-        "base-directory=R:\\\\",
+        "base-directory=i:\\\\0\\\\2x",
         "{clipboard}"
       ],
       "pauseAfterRun": false,
@@ -368,7 +396,7 @@
         "--cookies-from-browser",
         "firefox",
         "-o",
-        "base-directory=R:\\\\",
+        "base-directory=i:\\\\0\\\\2x",
         "{clipboard}"
       ],
       "pauseAfterRun": false,
